@@ -1,16 +1,16 @@
 // Importamos React y React DOM.
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import './index.css';
-import './tateti/tateti.css';
-// import App from './App';
-import TatetiApp from "./tateti/TatetiApp.js";
+import './index.css';
+// import './tateti/tateti.css';
+import App from './App';
+// import TatetiApp from "./tateti/TatetiApp.js";
 // import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    {/*<App />*/}
-    <TatetiApp />
+    <App />
   </React.StrictMode>,
     // Montamos el proyecto de React en el elemento #root.
   document.getElementById('root')
