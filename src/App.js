@@ -4,114 +4,16 @@
 // Hooks solo se pueden usar en componentes de tipo función.
 // Estos componentes se definen como una función común y corriente que retornen el elemento
 // de React (ej: JSX).
-import {useEffect, useState} from "react";
-import EmpresasLista from "./components/EmpresasLista.js";
+// import {useEffect, useState} from "react";
+import {Link, Route, Switch} from "react-router-dom";
+// import EmpresasLista from "./components/EmpresasLista.js";
+// import empresasService from "./services/empresas.js";
+import Home from "./views/Home.js";
+import Empresas from "./views/Empresas.js";
+import Vuelos from "./views/Vuelos.js";
+import EmpresasNueva from "./views/EmpresasNueva.js";
 
 function App() {
-    // Vamos a crear una lista de empresas con las que vamos a trabajar dentro de una
-    // variable de state.
-    // Para crear state, usamos el hook "useState".
-    // Todos los hooks en React deben empezar con el prefijo "use".
-    // Todos los hooks deben estar al comienzo de la función, y no pueden estar dentro
-    // de estructuras de control de flujo, subfuciones, etc.
-    // useState, en particular, recibe 1 parámetro: El valor por defecto del state.
-    // Retorna un array de dos posiciones:
-    // 0: El valor del state.
-    // 1: La función "setter" para el state.
-    // El state en React se considera "inmutable", y nunca deberíamos modificarlo a mano.
-    // Si queremos cambiar algo, deberíamos hacerlo a través de ese setter.
-    const [empresas, setEmpresas] = useState([
-        {
-            id_empresa: 1,
-            nombre: 'Aerolíneas Argentinas',
-            logo: 'aerolineas-argentinas.jpg',
-        },
-        {
-            id_empresa: 2,
-            nombre: 'LATAM Chile',
-            logo: 'latam-airlines.jpg',
-        },
-        {
-            id_empresa: 3,
-            nombre: 'American Airlines',
-            logo: 'american-airlines.jpg',
-        },
-    ]);
-
-    // useEffect permite agregar código para que se ejecute cada vez que el componente
-    // se crea o actualiza.
-    // Recibe como argumento una función NO "async", con el código a ejecutar.
-    // Como segundo parámetro opcional, podemos pasar un array de "dependencias".
-    // Esas dependencias deben incluir qué valores son los que tienen que cambiar para
-    // que el efecto se vuelva a ejecutar.
-    // Normalmente, un useEffect suele incluir en sus dependencias todos los valores
-    // de state o props que utilice en su interior.
-    // Si queremos que un efecto SOLO se ejecute UNA VEZ al crear el componente, entonces
-    // le pasamos un array de dependencias vacío.
-    useEffect(() => {
-        setTimeout(() => {
-            // Si no usamos el setter, React no se entera del cambio.
-            // empresas.push({
-            //     id_empresa: 4,
-            //     nombre: 'Delta Airlines',
-            //     logo: 'delta-airlines.jpg',
-            // });
-            // Usamos el set para asignarle el nuevo valor completo.
-            // Si quiero agregar, tengo que crear una copia del valor actual, agregarle lo
-            // nuevo, y pisar el viejo con el setter.
-            // const nuevo = empresas.slice();
-            // nuevo.push({
-            //     id_empresa: 4,
-            //     nombre: 'Delta Airlines',
-            //     logo: 'delta-airlines.jpg',
-            // });
-            // setEmpresas(nuevo);
-            // Usando ES6+
-            setEmpresas([
-                ...empresas,
-                {
-                    id_empresa: 4,
-                    nombre: 'Delta Airlines',
-                    logo: 'delta-airlines.jpg',
-                }
-            ]);
-        }, 2000);
-    }, []);
-
-    // Vamos a agregar una empresa a los 2 segundos de cargada la página.
-    // Si ponemos el setTimeout directamente, vamos a var que se re-ejecuta constantemente
-    // agregando múltiples veces la empresa.
-    // Esto se debe a que el código contenido dentro del componente se re-ejecuta cada
-    // vez que el state (o las props) del componente cambia.
-    // Para evitarlo, vamos a necesitar ayuda del hook useEffect (ver arriba).
-    // setTimeout(() => {
-    //     // Si no usamos el setter, React no se entera del cambio.
-    //     // empresas.push({
-    //     //     id_empresa: 4,
-    //     //     nombre: 'Delta Airlines',
-    //     //     logo: 'delta-airlines.jpg',
-    //     // });
-    //     // Usamos el set para asignarle el nuevo valor completo.
-    //     // Si quiero agregar, tengo que crear una copia del valor actual, agregarle lo
-    //     // nuevo, y pisar el viejo con el setter.
-    //     // const nuevo = empresas.slice();
-    //     // nuevo.push({
-    //     //     id_empresa: 4,
-    //     //     nombre: 'Delta Airlines',
-    //     //     logo: 'delta-airlines.jpg',
-    //     // });
-    //     // setEmpresas(nuevo);
-    //     // Usando ES6+
-    //     setEmpresas([
-    //         ...empresas,
-    //         {
-    //             id_empresa: 4,
-    //             nombre: 'Delta Airlines',
-    //             logo: 'delta-airlines.jpg',
-    //         }
-    //     ]);
-    // }, 2000);
-
     return (
         <div className="app">
             {/* Noten que en JSX hay que tener cuidado con los atributos de HTML que sean palabras reservadas en JS ("class" y "for").
@@ -128,25 +30,63 @@ function App() {
                     <div className="collapse navbar-collapse" id="navbar-menu">
                         <ul className="navbar-nav">
                             <li className="nav-item">
-                                <a className="nav-link" href="#">Home</a>
+                                {/*<a className="nav-link" href="#">Home</a>*/}
+                                {/* Link es el componente que crea un <a> para navegar con el Router. */}
+                                <Link
+                                    className="nav-link"
+                                    to="/"
+                                >Home</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link
+                                    className="nav-link"
+                                    to="/empresas"
+                                >Empresas</Link>
+                            </li>
+                            <li className="nav-item">
+                                <Link
+                                    className="nav-link"
+                                    to="/vuelos"
+                                >Vuelos</Link>
                             </li>
                         </ul>
                     </div>
                 </div>
             </nav>
-            <main className="container">
-                <h1>DV Flights</h1>
-                <p>Encontrá tu próxima aerolínea favorita</p>
+            {/*<main className="container">*/}
+            {/*    <h1>DV Flights</h1>*/}
+            {/*    <p>Encontrá tu próxima aerolínea favorita</p>*/}
+            {/*
+            Route es la etiqueta que renderiza un componente siempre que matchee la URL.
+            Para indicarle lo que queremos que renderice, podemos pasarle como hijo el componente.
 
-                <EmpresasLista
-                    items={empresas}
-                />
-                {/*<ul className="EmpresasLista">*/}
-                {/*    /!* Para imprimir un array de múltiples elementos de React, simplemente interpolamos el array.*/}
-                {/*    Tengan en cuenta que _no_ podemos escribir bucles ni otras estructuras dentro de JSX. *!/*/}
-                {/*    {empresasLista}*/}
-                {/*</ul>*/}
-            </main>
+            Las Routes matchen "parcialmente".
+            En otras palabras. si el path indicado "está en el comienzo" de la URL actual, la ruta
+            matchea. No necesita que el path sea completo.
+
+            Si queremos evitar esto, tenemos 2 approachs que podemos tomar.
+            1. Usar la prop "exact" en las rutas, para indicar que el matcheo debe ser exacto.
+            2. Usar un componente Switch que contenga todas las rutas para que solo se imprima la
+                primera que matchee.
+            */}
+            <Switch>
+                <Route path="/empresas/nueva">
+                    <EmpresasNueva />
+                </Route>
+                <Route path="/empresas">
+                    <Empresas />
+                </Route>
+                <Route path="/vuelos">
+                    <Vuelos />
+                </Route>
+                <Route path="/"> {/* El path "/", por lo mencionado arriba, va a matchear _todas_ las URLs. */}
+                    <Home/>
+                </Route>
+            </Switch>
+                {/*<EmpresasLista*/}
+                {/*    items={empresas}*/}
+                {/*/>*/}
+            {/*</main>*/}
             <footer className="footer">
                 <p>Da Vinci &copy; 2021</p>
             </footer>
