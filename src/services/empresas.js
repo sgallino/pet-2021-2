@@ -63,7 +63,7 @@ const empresasService = {
              }
          });
          const parsed = await response.json();
-         return parsed.success;
+         return parsed;
     }
 };
 

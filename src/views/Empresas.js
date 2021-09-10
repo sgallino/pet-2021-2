@@ -20,7 +20,7 @@ function Empresas() {
     const [empresas, setEmpresas] = useState([]);
     const [estaCargando, setEstaCargando] = useState(true);
 
-    useEffect(async () => {
+    useEffect(() => {
         // async function fetchData() {
         //     // await solo se puede usar delante de una promesa (o equivalente), e implica 2 cosas:
         //     // 1. Detiene la ejecución de la _función_ hasta que la promesa se resuelva.

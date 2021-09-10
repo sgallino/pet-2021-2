@@ -18,7 +18,7 @@ function App() {
         <div className="app">
             {/* Noten que en JSX hay que tener cuidado con los atributos de HTML que sean palabras reservadas en JS ("class" y "for").
          En esos casos, hay que reemplazarlos por sus equivalentes ("className" y "htmlFor").*/}
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
+            <nav className="navbar navbar-expand-lg navbar-light bg-light mb-3">
                 <div className="container-fluid">
                     <a className="navbar-brand" href="#">Navbar</a>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -87,7 +87,7 @@ function App() {
                 {/*    items={empresas}*/}
                 {/*/>*/}
             {/*</main>*/}
-            <footer className="footer">
+            <footer className="footer mt-3">
                 <p>Da Vinci &copy; 2021</p>
             </footer>
         </div>
