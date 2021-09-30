@@ -1,3 +1,4 @@
+import {API_HOST} from "../constants/constants.js";
 // const data = [
 //     {
 //         id_empresa: 1,
@@ -24,9 +25,14 @@ const empresasService = {
      * @returns {Promise<{}[]>}
      */
      all() {
-        return fetch('http://localhost:8000/api/empresas')
+        return fetch(`${API_HOST}/empresas`)
             .then(response => response.json())
             .then(parsed => parsed.data);
+    },
+    async get(id) {
+        const response = await fetch(`${API_HOST}/empresas/${id}`);
+        const jsonData = await response.json();
+        return jsonData;
     },
     // async all() {
     //     // async en una función implicaba 2 cosas:
@@ -49,7 +55,7 @@ const empresasService = {
     //     });
     // },
     async create(data) {
-         const response = await fetch('http://localhost:8000/api/empresas', {
+         const response = await fetch(`${API_HOST}/empresas`, {
              method: 'POST',
              body: JSON.stringify(data),
              headers: {

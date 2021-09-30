@@ -12,6 +12,7 @@ import Home from "./views/Home.js";
 import Empresas from "./views/Empresas.js";
 import Vuelos from "./views/Vuelos.js";
 import EmpresasNueva from "./views/EmpresasNueva.js";
+import EmpresasDetalle from "./views/EmpresasDetalle.js";
 
 function App() {
     return (
@@ -72,6 +73,9 @@ function App() {
             <Switch>
                 <Route path="/empresas/nueva">
                     <EmpresasNueva />
+                </Route>
+                <Route path="/empresas/:id">
+                    <EmpresasDetalle />
                 </Route>
                 <Route path="/empresas">
                     <Empresas />
