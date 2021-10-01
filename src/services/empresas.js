@@ -1,4 +1,5 @@
 import {API_HOST} from "../constants/constants.js";
+import authService from "./auth.js";
 // const data = [
 //     {
 //         id_empresa: 1,
@@ -66,6 +67,8 @@ const empresasService = {
                  // El Content-Type con "application/json" le indica a Laravel que la data viaja como un
                  // JSON. De esa forma, Laravel automáticamente la parsea.
                  'Content-Type': 'application/json',
+                 // Agregamos el token de autenticación para el backend.
+                 ...authService.tokenHeader(),
              }
          });
          const parsed = await response.json();

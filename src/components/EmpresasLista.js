@@ -13,7 +13,7 @@ function EmpresasLista(props) {
             {/* Para imprimir un array de múltiples elementos de React, simplemente interpolamos el array.
                     Tengan en cuenta que _no_ podemos escribir bucles ni otras estructuras dentro de JSX. */}
             {props.items.map(item =>
-                <EmpresasListaItem key={item.id_empresa} item={item} />
+                <EmpresasListaItem key={item.id_empresa} item={item} auth={props.auth} />
             )}
         </ul>
     );

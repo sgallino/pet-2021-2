@@ -4,7 +4,7 @@
 // Hooks solo se pueden usar en componentes de tipo función.
 // Estos componentes se definen como una función común y corriente que retornen el elemento
 // de React (ej: JSX).
-// import {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {Link, Route, Switch} from "react-router-dom";
 // import EmpresasLista from "./components/EmpresasLista.js";
 // import empresasService from "./services/empresas.js";
@@ -13,8 +13,40 @@ import Empresas from "./views/Empresas.js";
 import Vuelos from "./views/Vuelos.js";
 import EmpresasNueva from "./views/EmpresasNueva.js";
 import EmpresasDetalle from "./views/EmpresasDetalle.js";
+import Login from "./views/Login.js";
+import authService from "./services/auth.js";
 
 function App() {
+    // Definimos algo de state para almacenar el estado de autenticación.
+    const [authState, setAuthState] = useState({
+        user: {
+            id_usuario: null,
+            email: null,
+        },
+        logged: false,
+    });
+
+    const handleLogin = user => {
+        if(user.email !== null) {
+            setAuthState({
+                user: {...user},
+                logged: true,
+            });
+            // console.log("App: ", user);
+        }
+    }
+
+    const handleLogout = async () => {
+        await authService.logout();
+        setAuthState({
+            user: {
+                id_usuario: null,
+                email: null,
+            },
+            logged: false,
+        });
+    }
+
     return (
         <div className="app">
             {/* Noten que en JSX hay que tener cuidado con los atributos de HTML que sean palabras reservadas en JS ("class" y "for").
@@ -50,6 +82,25 @@ function App() {
                                     to="/vuelos"
                                 >Vuelos</Link>
                             </li>
+                            {
+                                authState.logged ?
+                                (
+                                    <li className="nav-item">
+                                        <button
+                                            className="btn nav-link"
+                                            onClick={handleLogout}
+                                        >Cerrar Sesión ({authState.user.email})</button>
+                                    </li>
+                                ) :
+                                (
+                                    <li className="nav-item">
+                                        <Link
+                                            className="nav-link"
+                                            to="/iniciar-sesion"
+                                        >Iniciar Sesión</Link>
+                                    </li>
+                                )
+                            }
                         </ul>
                     </div>
                 </div>
@@ -78,10 +129,17 @@ function App() {
                     <EmpresasDetalle />
                 </Route>
                 <Route path="/empresas">
-                    <Empresas />
+                    <Empresas
+                        auth={authState}
+                    />
                 </Route>
                 <Route path="/vuelos">
                     <Vuelos />
+                </Route>
+                <Route path="/iniciar-sesion">
+                    <Login
+                        onLogin={handleLogin}
+                    />
                 </Route>
                 <Route path="/"> {/* El path "/", por lo mencionado arriba, va a matchear _todas_ las URLs. */}
                     <Home/>
