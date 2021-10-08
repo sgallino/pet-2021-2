@@ -12,7 +12,9 @@ function Login(props) {
 
         if(exito) {
             // Si tuvo éxito, emitimos un evento para informar del éxito.
-            props.onLogin(authService.getUser());
+            if(typeof props.onLogin === 'function') {
+                props.onLogin(authService.getUser());
+            }
         }
     }
 

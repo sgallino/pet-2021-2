@@ -3,11 +3,13 @@ import EmpresasLista from "../components/EmpresasLista.js";
 import empresasService from "../services/empresas.js";
 import Loader from "../components/Loader.js";
 import {Link} from "react-router-dom";
-import authService from "../services/auth.js";
+// import authService from "../services/auth.js";
+import useAuth from "../hooks/useAuth.js";
 
-function Empresas({auth}) {
+function Empresas() {
     const [empresas, setEmpresas] = useState([]);
     const [estaCargando, setEstaCargando] = useState(true);
+    const auth = useAuth();
 
     useEffect(() => {
         // Usando una IIFE asíncrona.

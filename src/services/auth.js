@@ -1,4 +1,5 @@
-import {API_HOST} from "../constants/constants.js";
+import {API_HOST} from "./../constants/constants.js";
+import {storageContains, storageDelete, storageGet, storageSet} from "./storage.js";
 
 let user = {
     id_usuario: null,
@@ -37,6 +38,19 @@ const authService = {
             user = {...jsonResponse.data.user};
             token = jsonResponse.data.token;
 
+            // Guardamos en localStorage los datos del usuario autenticado.
+            // localStorage.setItem('user', JSON.stringify(user));
+            // localStorage.setItem('token', JSON.stringify(token));
+            // localStorage.setItem('token', token);
+            // storageSet('user', user);
+            // storageSet('token', token);
+            storageSet({
+                // user: user,
+                // token: token,
+                user,
+                token,
+            });
+
             // Le notificamos a todos los observadores que hubo un cambio.
             this.notifyAll();
 
@@ -72,6 +86,12 @@ const authService = {
 
         token = null;
 
+        // localStorage.removeItem('user');
+        // localStorage.removeItem('token');
+        // storageDelete('user');
+        // storageDelete('token');
+        storageDelete(['user', 'token']);
+
         // Le notificamos a todos los observadores que hubo un cambio.
         this.notifyAll();
 
@@ -103,17 +123,21 @@ const authService = {
      * "Suscripción" es el término que usamos en el patrón Observer para cuando se suma un observador.
      *
      * @param {Function} callback
+     * @return {Function} - Función para cancelar la suscripción.
      */
     subscribe(callback) {
         observers.push(callback);
-        console.log("Nuevo observer! Lista actual: ", observers);
+        // console.log("Nuevo observer! Lista actual: ", observers);
         // Podemos, si es útil, notificar inmediatamente a este callback.
         this.notify(callback);
 
-        // TODO: Descomentar y explicar esto :)
-        // return () => {
-        //     observers = observers.filter(obs => obs !== callback);
-        // }
+        // Retornamos una función de "desuscripcion".
+        // Esto permite que el suscriptor pueda cancelar la suscripción en el momento que quiera.
+        // Por ejemplo, al desmontar un el componente.
+        return () => {
+            // Filtramos para eliminar el callback creado en esta ejecución.
+            observers = observers.filter(obs => obs !== callback);
+        }
     },
 
     /**
@@ -132,5 +156,15 @@ const authService = {
         observers.forEach(obs => this.notify(obs));
     },
 };
+
+// Si hay un usuario autenticado en localStorage, lo levantamos.
+// if(localStorage.getItem('user') !== null) {
+//     user = {...JSON.parse(localStorage.getItem('user'))};
+//     token = localStorage.getItem('token');
+if(storageContains('user')) {
+    user = storageGet('user');
+    token = storageGet('token');
+    authService.notifyAll();
+}
 
 export default authService;

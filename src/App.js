@@ -4,7 +4,6 @@
 // Hooks solo se pueden usar en componentes de tipo función.
 // Estos componentes se definen como una función común y corriente que retornen el elemento
 // de React (ej: JSX).
-import {useEffect, useState} from "react";
 import {Link, Route, Switch} from "react-router-dom";
 // import EmpresasLista from "./components/EmpresasLista.js";
 // import empresasService from "./services/empresas.js";
@@ -15,36 +14,38 @@ import EmpresasNueva from "./views/EmpresasNueva.js";
 import EmpresasDetalle from "./views/EmpresasDetalle.js";
 import Login from "./views/Login.js";
 import authService from "./services/auth.js";
+import useAuth from "./hooks/useAuth.js";
 
 function App() {
     // Definimos algo de state para almacenar el estado de autenticación.
-    const [authState, setAuthState] = useState({
-        user: {
-            id_usuario: null,
-            email: null,
-        },
-        logged: false,
-    });
+    const auth = useAuth();
+    // const [authState, setAuthState] = useState({
+    //     user: {
+    //         id_usuario: null,
+    //         email: null,
+    //     },
+    //     logged: false,
+    // });
+    //
+    // useEffect(() => {
+    //     // Suscribimos al evento.
+    //     // Nuestro subscribe retorna la función de cancelación a la suscripción.
+    //     const unsubscribe = authService.subscribe(user => {
+    //         setAuthState({
+    //             user: {...user},
+    //             logged: user.email != null
+    //         });
+    //     });
+    //     // El useEffect espera como retorno del efecto, una función de "limpieza".
+    //     // Esa función de limpieza debería "limpiar" todo lo que el useEffect define.
+    //     // Por el ejemplo, peticiones de Ajax sin completar, suscripciones, etc.
+    //     return unsubscribe;
+    // }, []);
 
-    const handleLogin = user => {
-        if(user.email !== null) {
-            setAuthState({
-                user: {...user},
-                logged: true,
-            });
-            // console.log("App: ", user);
-        }
-    }
+    // const handleLogin = user => {}
 
     const handleLogout = async () => {
         await authService.logout();
-        setAuthState({
-            user: {
-                id_usuario: null,
-                email: null,
-            },
-            logged: false,
-        });
     }
 
     return (
@@ -83,13 +84,13 @@ function App() {
                                 >Vuelos</Link>
                             </li>
                             {
-                                authState.logged ?
+                                auth.logged ?
                                 (
                                     <li className="nav-item">
                                         <button
                                             className="btn nav-link"
                                             onClick={handleLogout}
-                                        >Cerrar Sesión ({authState.user.email})</button>
+                                        >Cerrar Sesión ({auth.user.email})</button>
                                     </li>
                                 ) :
                                 (
@@ -130,16 +131,14 @@ function App() {
                 </Route>
                 <Route path="/empresas">
                     <Empresas
-                        auth={authState}
+                        auth={auth}
                     />
                 </Route>
                 <Route path="/vuelos">
                     <Vuelos />
                 </Route>
                 <Route path="/iniciar-sesion">
-                    <Login
-                        onLogin={handleLogin}
-                    />
+                    <Login />
                 </Route>
                 <Route path="/"> {/* El path "/", por lo mencionado arriba, va a matchear _todas_ las URLs. */}
                     <Home/>
