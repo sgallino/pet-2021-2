@@ -73,7 +73,26 @@ const empresasService = {
          });
          const parsed = await response.json();
          return parsed;
-    }
+    },
+
+    /**
+     * Elimina una empresa del backend.
+     *
+     * @param {int} id
+     * @return {Promise<boolean|string|Event>}
+     */
+    async delete(id) {
+        const response = await fetch(`${API_HOST}/empresas/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+                ...authService.tokenHeader(),
+            }
+        });
+        const parsed = await response.json();
+        return parsed.success;
+    },
 };
 
 export default empresasService;

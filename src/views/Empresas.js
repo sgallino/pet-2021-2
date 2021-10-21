@@ -5,44 +5,37 @@ import Loader from "../components/Loader.js";
 import {Link} from "react-router-dom";
 // import authService from "../services/auth.js";
 import useAuth from "../hooks/useAuth.js";
+import useAuthContext from "../hooks/useAuthContext.js";
 
 function Empresas() {
     const [empresas, setEmpresas] = useState([]);
     const [estaCargando, setEstaCargando] = useState(true);
-    const auth = useAuth();
+    // const auth = useAuth();
+    const {AuthConsumer} = useAuthContext();
+    // const [counter, setCounter] = useState(0)
+
+    async function cargarEmpresas() {
+        setEstaCargando(true);
+        const data = await empresasService.all();
+        setEmpresas(data);
+        setEstaCargando(false);
+    }
 
     useEffect(() => {
-        // Usando una IIFE asíncrona.
-        (async () => {
-            const data = await empresasService.all();
-            setEmpresas(data);
-            setEstaCargando(false);
-        })();
-    }, []);
+        cargarEmpresas();
+    }, [/*counter*/]);
 
-    // Esta versión tiene el problema de que no se entera de cuando hay cambios en el estado de
-    // autenticación que ocurran mientras este componente está montado.
-    // const [authState, setAuthState] = useState({
-    //     user: {
-    //         email: null,
-    //         password: null,
-    //     },
-    //     logged: false,
-    // });
-    // useEffect(() => {
-    //     const user = authService.getUser();
-    //     setAuthState({
-    //         user,
-    //         logged: user.email !== null,
-    //     })
-    // }, []);
+    const handleDelete = () => {
+        cargarEmpresas();
+        // setCounter(counter + 1);
+    }
 
     return (<main className="container">
         <h1>Empresas</h1>
         <p>Trabajamos con las mejores aerolíneas, o las que nos den bola.</p>
 
         {
-            auth.logged && (<div>
+            AuthConsumer.logged && (<div>
                 <Link to="/empresas/nueva">Crear nueva empresa</Link>
             </div>)
         }
@@ -51,6 +44,7 @@ function Empresas() {
             <Loader /> :
             (<EmpresasLista
                 items={empresas}
+                onDelete={handleDelete}
             />)
         }
     </main>);

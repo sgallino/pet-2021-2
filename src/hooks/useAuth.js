@@ -12,12 +12,10 @@ import authService from "../services/auth.js";
  * @return {{user: {id_usuario: null, email: null}}}
  */
 function useAuth() {
+    const user = authService.getUser();
     const [auth, setAuth] = useState({
-        user: {
-            id_usuario: null,
-            email: null,
-        },
-        logged: false,
+        user,
+        logged: user.email !== null,
     });
 
     useEffect(() => {
@@ -27,13 +25,17 @@ function useAuth() {
         // Esa función de limpieza debería "limpiar" todo lo que el useEffect define.
         // Por el ejemplo, peticiones de Ajax sin completar, suscripciones, etc.
         const unsubscribe = authService.subscribe(user => {
-            setAuth({
-                user: {...user},
-                logged: user.email !== null
-            });
+            // Verificamos que el nuevo user sea distinto a lo que ya tenemos.
+            // console.log("user: ", user, " - auth.user: ", auth.user);
+            if(user.email !== auth.user.email) {
+                setAuth({
+                    user: {...user},
+                    logged: user.email !== null
+                });
+            }
         });
         return unsubscribe;
-    }, []);
+    }, [auth]);
 
     return auth;
 }

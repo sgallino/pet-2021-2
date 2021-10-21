@@ -15,40 +15,27 @@ import EmpresasDetalle from "./views/EmpresasDetalle.js";
 import Login from "./views/Login.js";
 import authService from "./services/auth.js";
 import useAuth from "./hooks/useAuth.js";
+import RouteAuth from "./components/RouteAuth.js";
+import useAuthContext from "./hooks/useAuthContext.js";
 
 function App() {
     // Definimos algo de state para almacenar el estado de autenticación.
     const auth = useAuth();
-    // const [authState, setAuthState] = useState({
-    //     user: {
-    //         id_usuario: null,
-    //         email: null,
-    //     },
-    //     logged: false,
-    // });
-    //
-    // useEffect(() => {
-    //     // Suscribimos al evento.
-    //     // Nuestro subscribe retorna la función de cancelación a la suscripción.
-    //     const unsubscribe = authService.subscribe(user => {
-    //         setAuthState({
-    //             user: {...user},
-    //             logged: user.email != null
-    //         });
-    //     });
-    //     // El useEffect espera como retorno del efecto, una función de "limpieza".
-    //     // Esa función de limpieza debería "limpiar" todo lo que el useEffect define.
-    //     // Por el ejemplo, peticiones de Ajax sin completar, suscripciones, etc.
-    //     return unsubscribe;
-    // }, []);
-
-    // const handleLogin = user => {}
+    // Definimos el contexto de auth para compartir con todos los componentes.
+    const {AuthContext} = useAuthContext();
 
     const handleLogout = async () => {
         await authService.logout();
     }
 
+    // console.log("[App] auth: ", auth);
+
     return (
+    <AuthContext.Provider value={{
+        user: auth.user,
+        logged: auth.logged,
+        // ...auth
+    }}>
         <div className="app">
             {/* Noten que en JSX hay que tener cuidado con los atributos de HTML que sean palabras reservadas en JS ("class" y "for").
          En esos casos, hay que reemplazarlos por sus equivalentes ("className" y "htmlFor").*/}
@@ -123,9 +110,12 @@ function App() {
                 primera que matchee.
             */}
             <Switch>
-                <Route path="/empresas/nueva">
+                <RouteAuth path="/empresas/nueva">
                     <EmpresasNueva />
-                </Route>
+                </RouteAuth>
+                {/*<Route path="/empresas/nueva">*/}
+                {/*    <EmpresasNueva />*/}
+                {/*</Route>*/}
                 <Route path="/empresas/:id">
                     <EmpresasDetalle />
                 </Route>
@@ -152,6 +142,7 @@ function App() {
                 <p>Da Vinci &copy; 2021</p>
             </footer>
         </div>
+    </AuthContext.Provider>
     );
 }
 
