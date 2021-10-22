@@ -17,6 +17,8 @@ import authService from "./services/auth.js";
 import useAuth from "./hooks/useAuth.js";
 import RouteAuth from "./components/RouteAuth.js";
 import useAuthContext from "./hooks/useAuthContext.js";
+import {useRef} from "react";
+import {CSSTransition} from "react-transition-group";
 
 function App() {
     // Definimos algo de state para almacenar el estado de autenticación.
@@ -29,6 +31,54 @@ function App() {
     }
 
     // console.log("[App] auth: ", auth);
+
+    const routes = [
+        {
+            path: '/',
+            // El componente de la ruta que queremos usar.
+            RouteComponent: Route,
+            // El componente que queremos renderizar.
+            Component: Home,
+            // Creamos una referencia para poder asociar el nodo a aplicar la transición con el
+            // componente de transición.
+            nodeRef: useRef(null),
+        },
+        {
+            path: '/iniciar-sesion',
+            RouteComponent: Route,
+            Component: Login,
+            nodeRef: useRef(null),
+        },
+        {
+            path: '/vuelos',
+            RouteComponent: Route,
+            Component: Vuelos,
+            nodeRef: useRef(null),
+        },
+        {
+            path: '/empresas',
+            RouteComponent: Route,
+            Component: Empresas,
+            nodeRef: useRef(null),
+        },
+        {
+            path: '/empresas/nueva',
+            RouteComponent: RouteAuth,
+            Component: EmpresasNueva,
+            nodeRef: useRef(null),
+        },
+        {
+            // En las rutas de React Router podemos utilizar expresiones regulares para acotar el tipo
+            // de dato que un parámetro debe tener. Esto se indica entre paréntesis a continuación del
+            // nombre del parámetro.
+            // \d => Cualquier dígito (0-9)
+            // + => 1 o más ocurrencias de la expresión que lo precede.
+            path: '/empresas/:id(\\d+)',
+            RouteComponent: Route,
+            Component: EmpresasDetalle,
+            nodeRef: useRef(null),
+        },
+    ];
 
     return (
     <AuthContext.Provider value={{
@@ -93,51 +143,48 @@ function App() {
                     </div>
                 </div>
             </nav>
-            {/*<main className="container">*/}
-            {/*    <h1>DV Flights</h1>*/}
-            {/*    <p>Encontrá tu próxima aerolínea favorita</p>*/}
-            {/*
-            Route es la etiqueta que renderiza un componente siempre que matchee la URL.
-            Para indicarle lo que queremos que renderice, podemos pasarle como hijo el componente.
+            {/* Este componente va a servir de base para estilizar las animaciones de cada ruta. */}
+            <div className="transition-container-base">
+                {routes.map(route => (
+                    // De cada ruta, queremos primero que nada imprimir el componente de la ruta, que está
+                    // en la propiedad "RouteComponent", y pasarle los datos relevantes (ej: el path).
+                    <route.RouteComponent path={route.path} key={route.path} exact>
+                        {/*
+                        Definimos la transición.
+                        Vamos a pasarle algunos parámetros.
+                        - timeout: La duración en ms.
+                        - onmountOnExit: Si queremos que se desmonte el componente luego de finalizar la
+                                transición.
+                        - classNames: (Noten el plural)
+                        - nodeRef: La referencia al elemento del DOM a transicionar.
+                        - in: Cuando el componente debe empezar a animar su transición. Es decir, cuando es
+                            válido.
+                            Como esto depende del estado de la ruta en particular que se esté parseando,
+                            vamos a hacer una función anónima que reciba las propiedades del componente
+                            Route padre (route.RouteComponent), y usarlas para configurar esto.
 
-            Las Routes matchen "parcialmente".
-            En otras palabras. si el path indicado "está en el comienzo" de la URL actual, la ruta
-            matchea. No necesita que el path sea completo.
-
-            Si queremos evitar esto, tenemos 2 approachs que podemos tomar.
-            1. Usar la prop "exact" en las rutas, para indicar que el matcheo debe ser exacto.
-            2. Usar un componente Switch que contenga todas las rutas para que solo se imprima la
-                primera que matchee.
-            */}
-            <Switch>
-                <RouteAuth path="/empresas/nueva">
-                    <EmpresasNueva />
-                </RouteAuth>
-                {/*<Route path="/empresas/nueva">*/}
-                {/*    <EmpresasNueva />*/}
-                {/*</Route>*/}
-                <Route path="/empresas/:id">
-                    <EmpresasDetalle />
-                </Route>
-                <Route path="/empresas">
-                    <Empresas
-                        auth={auth}
-                    />
-                </Route>
-                <Route path="/vuelos">
-                    <Vuelos />
-                </Route>
-                <Route path="/iniciar-sesion">
-                    <Login />
-                </Route>
-                <Route path="/"> {/* El path "/", por lo mencionado arriba, va a matchear _todas_ las URLs. */}
-                    <Home/>
-                </Route>
-            </Switch>
-                {/*<EmpresasLista*/}
-                {/*    items={empresas}*/}
-                {/*/>*/}
-            {/*</main>*/}
+                        */}
+                        {(routeProps) => (
+                            <CSSTransition
+                                classNames="mixed"
+                                timeout={300}
+                                in={routeProps.match !== null}
+                                unmountOnExit={true}
+                                nodeRef={route.nodeRef}
+                            >
+                                {/* Este div lo usamos para contener la transición.
+                                Noten que le pasamos la misma referencia que al nodeRef de la transición.*/}
+                                <div
+                                    className="transition-container"
+                                    ref={route.nodeRef}
+                                >
+                                    <route.Component />
+                                </div>
+                            </CSSTransition>
+                        )}
+                    </route.RouteComponent>
+                ))}
+            </div>
             <footer className="footer mt-3">
                 <p>Da Vinci &copy; 2021</p>
             </footer>

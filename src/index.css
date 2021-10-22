@@ -1,3 +1,7 @@
+:root {
+    --transition-speed: 300ms;
+}
+
 html, body, #root, .app {
     height: 100%;
 }
@@ -5,6 +9,7 @@ html, body, #root, .app {
 .app {
     display: grid;
     grid-template-rows: 56px 1fr 100px;
+    overflow-x: hidden;
 }
 
 .footer {
@@ -302,4 +307,97 @@ img {
     100% {
         transform: rotate(360deg);
     }
+}
+
+/*
+ |--------------------------------------------------------------------------
+ | Transiciones
+ |--------------------------------------------------------------------------
+ */
+/* Estilos de base */
+.transition-container-base {
+    /*position: relative;*/
+    display: grid;
+    /*grid-template-areas: */
+    /*        'header header header'*/
+    /*        'sidebar content content'*/
+    /*        'footer footer footer';*/
+    grid-template-areas: 'content';
+}
+
+.transition-container {
+    grid-area: content;
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*right: 0;*/
+    /*bottom: 0;*/
+}
+
+/*
+fade-appear, fade-appear-active, fade-appear-done
+fade-enter, fade-enter-active, fade-enter-done
+fade-exit, fade-exit-active, fade-exit-done
+
+El estado "enter" es cuando el componente está empezando a ingresar.
+El estado "enter-active" es durante la ejecución de la transición.
+El estado "enter-done" es cuando la transición de ingreso terminó.
+El estado "exit" es cuando el componente está empezando a salir.
+El estado "exit-active" es durante la ejecución de la transición.
+El estado "exit-done" es cuando la transición de salir terminó.
+ */
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transition: opacity var(--transition-speed);
+}
+
+.fade-exit {
+    opacity: 1;
+}
+
+.fade-exit-active {
+    opacity: 0;
+    transition: opacity var(--transition-speed);
+}
+
+/* Variante transición con slide */
+.slide-enter {
+    transform: translateX(100%);
+}
+
+.slide-enter-active {
+    transform: translateX(0);
+    transition: transform var(--transition-speed);
+}
+
+.slide-exit {
+    transform: translateX(0);
+}
+
+.slide-exit-active {
+    transform: translateX(-100%);
+    transition: transform var(--transition-speed);
+}
+
+/* Variante mixta */
+.mixed-enter {
+    transform: translateX(100%);
+}
+
+.mixed-enter-active {
+    transform: translateX(0);
+    transition: transform var(--transition-speed);
+}
+
+.mixed-exit {
+    opacity: 1;
+}
+
+.mixed-exit-active {
+    opacity: 0;
+    transition: opacity var(--transition-speed);
 }
