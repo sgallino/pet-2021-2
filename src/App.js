@@ -19,6 +19,7 @@ import RouteAuth from "./components/RouteAuth.js";
 import useAuthContext from "./hooks/useAuthContext.js";
 import {useRef} from "react";
 import {CSSTransition} from "react-transition-group";
+import EmpresasEditar from "./views/EmpresasEditar.js";
 
 function App() {
     // Definimos algo de state para almacenar el estado de autenticación.
@@ -76,6 +77,17 @@ function App() {
             path: '/empresas/:id(\\d+)',
             RouteComponent: Route,
             Component: EmpresasDetalle,
+            nodeRef: useRef(null),
+        },
+        {
+            // En las rutas de React Router podemos utilizar expresiones regulares para acotar el tipo
+            // de dato que un parámetro debe tener. Esto se indica entre paréntesis a continuación del
+            // nombre del parámetro.
+            // \d => Cualquier dígito (0-9)
+            // + => 1 o más ocurrencias de la expresión que lo precede.
+            path: '/empresas/:id(\\d+)/editar',
+            RouteComponent: RouteAuth,
+            Component: EmpresasEditar,
             nodeRef: useRef(null),
         },
     ];

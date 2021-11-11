@@ -46,7 +46,11 @@ function EmpresasListaItem(props) {
             <img src={`${IMAGE_PATH}/empresas/${props.item.logo}`} alt="Logo"/>
             {
                 AuthConsumer.user.email !== null && (<div>
-                    <button type="button" className="btn btn-secondary">Editar</button>
+                    <Link
+                        type="button"
+                        className="btn btn-secondary"
+                        to={`empresas/${props.item.id_empresa}/editar`}
+                    >Editar</Link>
                     <button
                         type="button"
                         className="btn btn-danger"

@@ -15,18 +15,22 @@ function Empresas() {
     // const [counter, setCounter] = useState(0)
 
     async function cargarEmpresas() {
+        empresasService.all();
         setEstaCargando(true);
-        const data = await empresasService.all();
-        setEmpresas(data);
-        setEstaCargando(false);
+        // const data = await empresasService.all();
+        // setEmpresas(data);
+        return empresasService.subscribe(empresas => {
+            setEmpresas(empresas);
+            setEstaCargando(false);
+        });
     }
 
     useEffect(() => {
-        cargarEmpresas();
+        return cargarEmpresas();
     }, [/*counter*/]);
 
     const handleDelete = () => {
-        cargarEmpresas();
+        // cargarEmpresas();
         // setCounter(counter + 1);
     }
 
