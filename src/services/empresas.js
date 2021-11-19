@@ -177,6 +177,42 @@ const empresasService = {
         }
     },
 
+    async execute(id, data) {
+        const response = await fetch(`${API_HOST}/empresas/${id}`, {
+            method: 'POST',
+            // body: JSON.stringify({
+            //     action: 'updateObservations',
+            //     payload: JSON.stringify({observation: ''})
+            // }),
+            // body: JSON.stringify({
+            //     action: 'updateVaccines',
+            //     payload: JSON.stringify({vaccines: ['']})
+            // }),
+            body: JSON.stringify({
+                action: 'updateVeterinaries',
+                payload: JSON.stringify({dates: ['']})
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                ...authService.tokenHeader(),
+            }
+        });
+        const parsed = await response.json();
+        if(parsed.success) {
+            // this.loadAllEmpresas();
+            empresas = empresas.map(empresa => {
+                if(+empresa.id_empresa === +id) {
+                    empresa.nombre = data.nombre;
+                    empresa.id_pais = data.id_pais;
+                }
+                return empresa;
+            });
+            this.notifyAll();
+            return parsed;
+        }
+    },
+
     /**
      * Elimina una empresa del backend.
      *

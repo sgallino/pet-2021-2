@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useParams} from "react-router-dom";
 import {IMAGE_PATH} from "../constants/constants.js";
+import {showNotificacion} from "../services/notificaciones.js";
 
 // Definimos el schema de validación usando yup.
 // Queremos que sea un objeto con la siguiente forma:
@@ -37,6 +38,7 @@ function EmpresasEditar() {
     // console.log(id);
 
     useEffect(() => {
+        if(!id) return;
         (async function() {
             // console.log(id);
             const empresa = await empresasService.get(id);
@@ -112,15 +114,25 @@ function EmpresasEditar() {
                 ...data,
                 logo: logoData
             })
-            .then(data => {
+            .then(responseData => {
                 setIsLoading(false);
-                if(!data.success) {
-                    // Hubo algún error...
-                    // if(data.errors) {
-                    //     setErrors(data.errors);
-                    // }
+                if(responseData.success) {
+                    showNotificacion({
+                        title: 'Éxito',
+                        message: 'Empresa ' + data.nombre + ' actualizada correctamente.',
+                        type: 'success',
+                        closable: true,
+                    });
+                } else {
+                    showNotificacion({
+                        title: 'Error',
+                        message: 'Ocurrió un error inesperado y la empresa no pudo actualizarse.',
+                        type: 'danger',
+                        closable: true,
+                    });
+                    console.log("Error de actualización data: ", responseData);
                 }
-                console.log("Success? ", data);
+                console.log("Success? ", responseData);
             });
     }
     // console.log('Errors: ', errors);
@@ -174,7 +186,7 @@ function EmpresasEditar() {
             <div className="mb-3">
                 <p>Logo actual:</p>
                 {
-                    logoActual != '' ?
+                    logoActual != null ?
                     (<><img src={`${IMAGE_PATH}/empresas/${logoActual}`} alt=""/>
                     <p id="logo-help" className="text-muted">Solo elegí un nuevo logo si querés cambiar la
                         actual.</p></>) :
